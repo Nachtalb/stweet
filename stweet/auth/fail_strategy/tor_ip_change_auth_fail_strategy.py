@@ -1,6 +1,9 @@
 import time
 
-from tor_python_easy.tor_control_port_client import TorControlPortClient
+try:
+    from tor_python_easy.tor_control_port_client import TorControlPortClient
+except ImportError:
+    raise ImportError("Tor related imports are not available. Please install the [tor] extra")
 
 from stweet.auth.fail_strategy.auth_fail_strategy import AuthFailStrategy
 

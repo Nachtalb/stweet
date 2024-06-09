@@ -1,9 +1,5 @@
 """DefaultTwitterWebClientProvider class."""
-from tor_python_easy.tor_control_port_client import TorControlPortClient
-
 from ..auth import SimpleAuthTokenProvider
-from ..auth.fail_strategy.tor_ip_change_auth_fail_strategy import \
-    TorIpChangeAuthFailStrategy
 from ..http_request import (RequestsWebClient, RequestsWebClientProxyConfig,
                             WebClient)
 from .twitter_auth_web_client_interceptor import \
@@ -24,6 +20,11 @@ class DefaultTwitterWebClientProvider:
             control_port: int,
             control_password: str
     ) -> WebClient:
+        try:
+            from tor_python_easy.tor_control_port_client import TorControlPortClient
+            from ..auth.fail_strategy.tor_ip_change_auth_fail_strategy import TorIpChangeAuthFailStrategy
+        except ImportError:
+            raise ImportError("Tor related imports are not available. Please install the [tor] extra")
         tor_control_client = TorControlPortClient(control_host, control_port, control_password)
         fail_strategy = TorIpChangeAuthFailStrategy(tor_control_client)
         auth_token_provider = SimpleAuthTokenProvider(fail_strategy)
